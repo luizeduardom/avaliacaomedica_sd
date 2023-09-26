@@ -40,17 +40,17 @@ public class RespostaDiagnostico implements Serializable{
                 Socket socket = serverSocket.accept();
                 System.out.println("Cliente conectado: " + socket.getInetAddress());
                 
-                /*ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
+                
+                ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
                 Consulta consulta = (Consulta) inputStream.readObject();
                 
                 consultas.add(consulta);
                 
                 diagnosticoAutomatico = realizarDiagnosticoAutomatico(consultas);
                 
-                System.out.println("Diagnóstico Automático: " + String.join(", ", diagnosticoAutomatico));
                 
                 
-                socket.close();*/
+                socket.close();
             }
         } catch (Exception e){
             e.printStackTrace();
@@ -69,20 +69,7 @@ public class RespostaDiagnostico implements Serializable{
 
     
     private static ArrayList<String> realizarDiagnosticoAutomatico(ArrayList<Consulta> consultas) {
-        // Implemente a lógica do algoritmo Apriori aqui usando apenas List
-        // Esta implementação de exemplo irá contar a frequência de cada sintoma
-
-        ArrayList<String> todosSintomas = new ArrayList<>();
-        for (Consulta consulta : consultas) {
-            todosSintomas.addAll((consulta.getMensagem()));
-        }
-
-        for (String sintoma : todosSintomas) {
-            long contagem = todosSintomas.stream().filter(s -> s.equals(sintoma)).count();
-            if (contagem >= (consultas.size() / 2)) { // Define um limiar de frequência
-                diagnosticoAutomatico.add(sintoma);
-            }
-        }
+        System.out.println(consultas);
 
         return diagnosticoAutomatico;
     }

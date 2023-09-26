@@ -231,8 +231,8 @@ public class SolicitacaoDiagnostico extends javax.swing.JFrame {
         Socket socket = null;
         InetAddress enderecoServidor = null;
         Object Resposta;
-        ObjectOutputStream objectOutputStream = null;
-        ObjectInputStream objectInputStream=null;
+        ObjectOutputStream objectOutputStream;
+        ObjectInputStream objectInputStream;
 
         try {
             enderecoServidor = InetAddress.getByName(nomeServidor);
@@ -256,8 +256,6 @@ public class SolicitacaoDiagnostico extends javax.swing.JFrame {
             System.out.println("to aqui no objectoutput");
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             System.out.println("passei do objectoutput");
-            objectInputStream = new ObjectInputStream(socket.getInputStream());
-            System.out.println("passei do input");
         } catch (IOException e) {
             System.out.println("erro no output/input");
             System.out.println(e.getMessage());
@@ -280,26 +278,29 @@ public class SolicitacaoDiagnostico extends javax.swing.JFrame {
         System.out.println(mensagem);
 
         Consulta solicitacao = new Consulta(mensagem);
-        
+
         objectOutputStream.writeObject(solicitacao);
-        
+
         try {
+            objectInputStream = new ObjectInputStream(socket.getInputStream());
+            System.out.println("passei do input");
             Resposta = (RespostaDiagnostico) objectInputStream.readObject();
-        } catch (Exception e){
+        } catch (Exception e) {
+            System.out.println("dei erro no input");
             System.out.println(e.getMessage());
             return;
         }
-        
+
         try {
             socket.close();
-        } catch (IOException e){
+        } catch (IOException e) {
             System.out.println(e.getMessage());
             return;
         }
-        
+
         System.out.println("rodei até aqui");
         /*if (Resposta instanceof RespostaDiagnostico){
-            System.out.println("Diagnostico: " + ((RespostaDiagnostico) Resposta ));
+            System.out.println("Diagnostico: " + ((RespostaDiagnostico)Resposta));
         }*/
 
     }

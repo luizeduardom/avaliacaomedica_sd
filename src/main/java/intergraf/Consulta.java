@@ -20,6 +20,13 @@ public class Consulta implements Serializable {
     public ArrayList<String> getMensagem() {
         return mensagem;
     }
+
+    @Override
+    public String toString() {
+        return "Consulta{" + "mensagem=" + mensagem + '}';
+    }
+    
+    
     
     
     
