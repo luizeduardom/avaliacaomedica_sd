@@ -9,21 +9,44 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Consulta implements Serializable {
-    ArrayList<String> mensagem = new ArrayList();
+    ArrayList<String> sintomas = new ArrayList();
+    
+    ArrayList<String> diagnosticos = new ArrayList();
 
     public Consulta(ArrayList<String> mensagemRecebida) {
         for(int i = 0; i<mensagemRecebida.size(); i++){
-            mensagem.add(mensagemRecebida.get(i));
+            sintomas.add(mensagemRecebida.get(i));
         }
     }
 
-    public ArrayList<String> getMensagem() {
-        return mensagem;
+    public Consulta() {
+        
     }
+    
+    
+
+    public ArrayList<String> getSintomas() {
+        return sintomas;
+    }
+
+    public void setSintomas(ArrayList<String> sintomas) {
+        this.sintomas = sintomas;
+    }
+    
+
+    public ArrayList<String> getDiagnosticos() {
+        return diagnosticos;
+    }
+
+    public void setDiagnosticos(ArrayList<String> diagnosticos) {
+        this.diagnosticos = diagnosticos;
+    }
+    
+    
 
     @Override
     public String toString() {
-        return "Consulta{" + "mensagem=" + mensagem + '}';
+        return "" + sintomas;
     }
     
     

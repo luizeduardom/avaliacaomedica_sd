@@ -52,11 +52,13 @@ public class SolicitacaoDiagnostico extends javax.swing.JFrame {
         chkTontura = new javax.swing.JCheckBox();
         chkCansaco = new javax.swing.JCheckBox();
         jButton1 = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
+        txtDiagnostico = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Solicitação de Diagnóstico");
 
         chkCabeca.setText("Dor de Cabeça");
@@ -101,11 +103,15 @@ public class SolicitacaoDiagnostico extends javax.swing.JFrame {
             }
         });
 
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        txtDiagnostico.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                txtDiagnosticoActionPerformed(evt);
             }
         });
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel2.setText("Diagnostico");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -115,10 +121,8 @@ public class SolicitacaoDiagnostico extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(20, 20, 20)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(38, 38, 38))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -134,18 +138,21 @@ public class SolicitacaoDiagnostico extends javax.swing.JFrame {
                                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(chkVomito)
                                             .addComponent(chkCalafrio))
-                                        .addGap(95, 95, 95)))
+                                        .addGap(202, 202, 202)))
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(chkInchaco)
                                     .addComponent(chkFebre)
                                     .addComponent(chkDiarreia)
                                     .addComponent(chkCansaco)
-                                    .addComponent(chkGarganta)))
-                            .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.LEADING)))
+                                    .addComponent(chkGarganta))))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(82, 82, 82)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(20, Short.MAX_VALUE))
+                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtDiagnostico, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -174,8 +181,10 @@ public class SolicitacaoDiagnostico extends javax.swing.JFrame {
                     .addComponent(chkGarganta))
                 .addGap(18, 18, 18)
                 .addComponent(jButton1)
-                .addGap(18, 18, 18)
-                .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtDiagnostico, javax.swing.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -193,15 +202,16 @@ public class SolicitacaoDiagnostico extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void chkCabecaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkCabecaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_chkCabecaActionPerformed
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void txtDiagnosticoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDiagnosticoActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_txtDiagnosticoActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
@@ -230,63 +240,55 @@ public class SolicitacaoDiagnostico extends javax.swing.JFrame {
         String nomeServidor = "DESKTOP-PJ4MRQQ";
         Socket socket = null;
         InetAddress enderecoServidor = null;
-        Object Resposta;
+        ArrayList<String> dadosRecebidos;
         ObjectOutputStream objectOutputStream;
         ObjectInputStream objectInputStream;
 
         try {
             enderecoServidor = InetAddress.getByName(nomeServidor);
         } catch (UnknownHostException e) {
-            System.out.println("to aqui");
             System.out.println(e.getMessage());
             return;
         }
 
         try {
-            System.out.println("to aqui criando o socket");
             socket = new Socket(enderecoServidor, 2000);
-            System.out.println("passei no socket");
+            System.out.println("Socket criado com sucesso!");
         } catch (IOException e) {
-            System.out.println("erro no socket");
             System.out.println(e.getMessage());
             return;
         }
 
         try {
-            System.out.println("to aqui no objectoutput");
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-            System.out.println("passei do objectoutput");
         } catch (IOException e) {
-            System.out.println("erro no output/input");
             System.out.println(e.getMessage());
             return;
         }
 
-        ArrayList<String> mensagem = new ArrayList();
+        ArrayList<String> sintomas = new ArrayList();
 
-        adicionarArray(chkCabeca, "dor de cabeça", mensagem);
-        adicionarArray(chkCalafrio, "calafrio", mensagem);
-        adicionarArray(chkCansaco, "cansaço", mensagem);
-        adicionarArray(chkDiarreia, "diarreia", mensagem);
-        adicionarArray(chkFebre, "febre", mensagem);
-        adicionarArray(chkGarganta, "dor de garganta", mensagem);
-        adicionarArray(chkInchaco, "inchaço", mensagem);
-        adicionarArray(chkOlho, "dor nos olhos", mensagem);
-        adicionarArray(chkTontura, "tontura", mensagem);
-        adicionarArray(chkVomito, "vômito", mensagem);
+        adicionarArray(chkCabeca, "dor de cabeça", sintomas);
+        adicionarArray(chkCalafrio, "calafrio", sintomas);
+        adicionarArray(chkCansaco, "cansaço", sintomas);
+        adicionarArray(chkDiarreia, "diarreia", sintomas);
+        adicionarArray(chkFebre, "febre", sintomas);
+        adicionarArray(chkGarganta, "dor de garganta", sintomas);
+        adicionarArray(chkInchaco, "inchaço", sintomas);
+        adicionarArray(chkOlho, "dor nos olhos", sintomas);
+        adicionarArray(chkTontura, "tontura", sintomas);
+        adicionarArray(chkVomito, "vômito", sintomas);
 
-        System.out.println(mensagem);
+        System.out.println("Sintomas enviados para o servidor: " + sintomas);
 
-        Consulta solicitacao = new Consulta(mensagem);
+        Consulta solicitacao = new Consulta(sintomas);
 
         objectOutputStream.writeObject(solicitacao);
 
         try {
             objectInputStream = new ObjectInputStream(socket.getInputStream());
-            System.out.println("passei do input");
-            Resposta = (RespostaDiagnostico) objectInputStream.readObject();
-        } catch (Exception e) {
-            System.out.println("dei erro no input");
+            dadosRecebidos = (ArrayList<String>) objectInputStream.readObject();
+        } catch (IOException | ClassNotFoundException e) {
             System.out.println(e.getMessage());
             return;
         }
@@ -298,10 +300,10 @@ public class SolicitacaoDiagnostico extends javax.swing.JFrame {
             return;
         }
 
-        System.out.println("rodei até aqui");
-        /*if (Resposta instanceof RespostaDiagnostico){
-            System.out.println("Diagnostico: " + ((RespostaDiagnostico)Resposta));
-        }*/
+        for (String str : dadosRecebidos) {
+            System.out.println("Os dados recebidos do servidor foram: " + str);
+            txtDiagnostico.setText(str);
+        }
 
     }
     /**
@@ -321,7 +323,8 @@ public class SolicitacaoDiagnostico extends javax.swing.JFrame {
     private javax.swing.JCheckBox chkVomito;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField txtDiagnostico;
     // End of variables declaration//GEN-END:variables
 }
