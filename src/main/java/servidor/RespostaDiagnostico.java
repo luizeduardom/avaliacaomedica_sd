@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package servidor;
 
 import intergraf.Consulta;
@@ -16,15 +11,11 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-/**
- *
- * @author Eduardo
- */
 public class RespostaDiagnostico implements Serializable {
 
     private static final int PORTA = 2000;
     private static ArrayList<Consulta> consultas = new ArrayList<>();
-    private static ArrayList<String> diagnosticoAutomatico;
+    private static ArrayList<String> diagnosticoApriori;
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
 
@@ -51,11 +42,11 @@ public class RespostaDiagnostico implements Serializable {
 
             consultas.add(sintomas);
 
-            diagnosticoAutomatico = realizarDiagnosticoAutomatico(consultas);
+            diagnosticoApriori = realizarApriori(consultas);
 
             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
 
-            outputStream.writeObject(diagnosticoAutomatico);
+            outputStream.writeObject(diagnosticoApriori);
 
             socket.close();
         }
@@ -67,15 +58,15 @@ public class RespostaDiagnostico implements Serializable {
     }
 
     public static ArrayList<String> getDiagnosticoAutomatico() {
-        return diagnosticoAutomatico;
+        return diagnosticoApriori;
     }
 
-    private static ArrayList<String> realizarDiagnosticoAutomatico(ArrayList<Consulta> consultas) {
+    private static ArrayList<String> realizarApriori(ArrayList<Consulta> consultas) {
         ArrayList<String> diagnostico = new ArrayList();
         diagnostico.add("Diagnosticado como dengue pelo médico Asdrubal");
         ArrayList<String> sintomas = new ArrayList();
         consultas.get(0).setDiagnosticos(diagnostico);
-        diagnosticoAutomatico = consultas.get(0).getDiagnosticos();
-        return diagnosticoAutomatico;
+        diagnosticoApriori = consultas.get(0).getDiagnosticos();
+        return diagnosticoApriori;
     }
 }
