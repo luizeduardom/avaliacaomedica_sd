@@ -63,8 +63,10 @@ public class RespostaDiagnostico implements Serializable {
 
     private static ArrayList<String> realizarApriori(ArrayList<Consulta> consultas) {
         ArrayList<String> diagnostico = new ArrayList();
-        diagnostico.add("Diagnosticado como dengue pelo médico Asdrubal");
         ArrayList<String> sintomas = new ArrayList();
+
+        //diagnostico.add("Diagnosticado como dengue pelo médico Asdrubal");
+
         consultas.get(0).setDiagnosticos(diagnostico);
         diagnosticoApriori = consultas.get(0).getDiagnosticos();
         return diagnosticoApriori;

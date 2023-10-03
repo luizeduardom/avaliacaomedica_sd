@@ -8,7 +8,7 @@ public class Consulta implements Serializable {
     ArrayList<String> diagnosticos = new ArrayList();
 
     public Consulta(ArrayList<String> mensagemRecebida) {
-        for(int i = 0; i<mensagemRecebida.size(); i++){
+        for(int i = 0; i < mensagemRecebida.size(); i++){
             sintomas.add(mensagemRecebida.get(i));
         }
     }
