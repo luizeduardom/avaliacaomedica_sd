@@ -302,7 +302,7 @@ public class Diagnostico extends javax.swing.JFrame {
 
             // Verifique quantos sintomas informados estão presentes na consulta
             for (String sintoma : sintomas) {
-//hghgghg
+
                 if (consulta.getSintomas().contains(sintoma)) {
                     count++;
                 }
