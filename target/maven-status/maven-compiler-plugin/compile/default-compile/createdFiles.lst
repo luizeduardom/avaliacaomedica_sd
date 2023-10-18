@@ -1,8 +1,6 @@
-intergraf\SolicitacaoDiagnostico$4.class
-intergraf\SolicitacaoDiagnostico$3.class
-intergraf\SolicitacaoDiagnostico$1.class
-intergraf\SolicitacaoDiagnostico$2.class
-intergraf\SolicitacaoDiagnostico.class
-servidor\RespostaDiagnostico.class
-intergraf\Consulta.class
-intergraf\SolicitacaoDiagnostico$5.class
+intergraf/Diagnostico$2.class
+intergraf/Diagnostico$1.class
+servidor/Servidor.class
+intergraf/Candidato.class
+intergraf/Consulta.class
+intergraf/Diagnostico.class

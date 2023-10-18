@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Consulta implements Serializable {
+    
     ArrayList<String> sintomas = new ArrayList();
-    ArrayList<String> diagnosticos = new ArrayList();
 
     public Consulta(ArrayList<String> mensagemRecebida) {
         for(int i = 0; i < mensagemRecebida.size(); i++){
@@ -22,14 +22,6 @@ public class Consulta implements Serializable {
 
     public void setSintomas(ArrayList<String> sintomas) {
         this.sintomas = sintomas;
-    }
-    
-    public ArrayList<String> getDiagnosticos() {
-        return diagnosticos;
-    }
-
-    public void setDiagnosticos(ArrayList<String> diagnosticos) {
-        this.diagnosticos = diagnosticos;
     }
 
     @Override

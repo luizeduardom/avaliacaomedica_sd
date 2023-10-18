@@ -1,7 +1,7 @@
 package servidor;
 
 import intergraf.Consulta;
-import intergraf.SolicitacaoDiagnostico;
+import intergraf.Diagnostico;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -11,11 +11,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class RespostaDiagnostico implements Serializable {
+
+public class Servidor implements Serializable {
 
     private static final int PORTA = 2000;
-    private static ArrayList<Consulta> consultas = new ArrayList<>();
-    private static ArrayList<String> diagnosticoApriori;
+    private static ArrayList<Consulta> diagnosticos = new ArrayList();
+
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
 
@@ -28,47 +29,36 @@ public class RespostaDiagnostico implements Serializable {
             e.printStackTrace();
             return;
         }
-        
-        new SolicitacaoDiagnostico().setVisible(true);
-        
+
+        new Diagnostico().setVisible(true);
+
         while (true) {
             Socket socket = serverSocket.accept();
             System.out.println("Cliente conectado: " + socket.getInetAddress());
 
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
-            Consulta sintomas = (Consulta) inputStream.readObject();
-            
-            System.out.println("Recebi do cliente os sintomas:" + sintomas );
+            Consulta consulta = (Consulta) inputStream.readObject();
 
-            consultas.add(sintomas);
+            System.out.println("Recebi do cliente os sintomas:" + consulta);
 
-            diagnosticoApriori = realizarApriori(consultas);
+            diagnosticos.add(consulta);
 
             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
 
-            outputStream.writeObject(diagnosticoApriori);
+            outputStream.writeObject(consulta);
 
             socket.close();
         }
 
+    }
+    
+    private static void diagnosticoNormal(){
+   
     }
 
     public static int getPORTA() {
         return PORTA;
     }
 
-    public static ArrayList<String> getDiagnosticoAutomatico() {
-        return diagnosticoApriori;
-    }
 
-    private static ArrayList<String> realizarApriori(ArrayList<Consulta> consultas) {
-        ArrayList<String> diagnostico = new ArrayList();
-        ArrayList<String> sintomas = new ArrayList();
-
-        //diagnostico.add("Diagnosticado como dengue pelo médico Asdrubal");
-
-        consultas.get(0).setDiagnosticos(diagnostico);
-        diagnosticoApriori = consultas.get(0).getDiagnosticos();
-        return diagnosticoApriori;
-    }
 }
