@@ -17,8 +17,7 @@ import javax.swing.JOptionPane;
 public class Diagnostico extends javax.swing.JFrame {
 
     private static ArrayList<Consulta> diagnosticos = new ArrayList();
-    private static final double FREQ_MINIMA = 0.5;
-    private static final double CONF_MINIMA = 0.7;
+    private static final double CONFIANCA_MIN = 0.5;
 
     public Diagnostico() {
         initComponents();
@@ -278,9 +277,8 @@ public class Diagnostico extends javax.swing.JFrame {
 
     private void apriori() throws IOException {
 
-        int maxCount = 0; // Contador máximo de ocorrências de sintomas
-        ArrayList<String> doencasDiagnostico = new ArrayList<>(); //Lista para armazenar as doenças do apriori
         ArrayList<String> sintomas = new ArrayList();//Lista dos sintomas do cliente
+        ArrayList<Candidato> diagnosticoApriori = new ArrayList<>(); //Lista para armazenar as doenças do apriori
 
         adicionarArray(chkCabeca, "Dor de cabeça", sintomas);
         adicionarArray(chkCalafrio, "Calafrio", sintomas);
@@ -294,36 +292,55 @@ public class Diagnostico extends javax.swing.JFrame {
         adicionarArray(chkVomito, "Vômito", sintomas);
 
         for (Consulta consulta : diagnosticos) {
-            int count = 0;
+            double confianca = 0;
+            int contadorSintomas = 0; //Utilizo quando uma consulta tem o mesmo tamanho de outra
 
-            if (consulta.getSintomas().containsAll(sintomas)) {
-                System.out.println("Contem todos os sintomas");
-            }
-
-            // Verifique quantos sintomas informados estão presentes na consulta
+            
+            // For para percorrer cada sintoma da consulta
             for (String sintoma : sintomas) {
 
                 if (consulta.getSintomas().contains(sintoma)) {
-                    count++;
+                    contadorSintomas++;
                 }
             }
 
-            // Se o número de sintomas presentes na consulta for maior que o máximo atual
-            if (count > maxCount) {
-                maxCount = count;
-                doencasDiagnostico.clear();
-                doencasDiagnostico.add(consulta.getSintomas().get(consulta.getSintomas().size() - 1));
-            } else if (count == maxCount) {
-                doencasDiagnostico.add(consulta.getSintomas().get(consulta.getSintomas().size() - 1));
+            // Tamanho dos sintomas da consulta (excluindo o diagnostico)
+            int tamanhoSintomas = consulta.getSintomas().size() - 1;
+            
+            // Tamanho dos sintomas que o usuário selecionou no checkbox
+            int sintomasDoUsuario = sintomas.size();
+
+            
+            // Se existe algum sintoma da consulta no checkbox selecionado, ele verifica se o contador de sintomas do usuário é menor que o tamanho de sintomas que o 
+            // usuário selecionou no checkbox, se for, ele faz um calculo de confiança onde o contador de sintomas do usuário é dividido pelo numero de sintomas selecionados
+            // do checkbox. Se não, ele faz o calculo da confiança baseado no tamanho dos sintomas da consulta dividido pelo sintomas que o usuário selecionou no checkbox
+            if (contadorSintomas > 0) {
+                String diagnostico = consulta.getSintomas().get(tamanhoSintomas);
+
+                if (contadorSintomas < tamanhoSintomas) {
+
+                    confianca = (double) contadorSintomas / tamanhoSintomas;
+
+                } else {
+
+                    confianca = (double) tamanhoSintomas / sintomasDoUsuario;
+
+                }
+
+                // se a confiança for maior ou igual da confiança mínima estipulada, então ele cria um candidato passando a confiança e o diagnostico e adiciona no array de
+                // candidatos
+                if (confianca >= CONFIANCA_MIN) {
+
+                    Candidato candidato = new Candidato(diagnostico, confianca);
+
+                    if (candidato.getConfianca() >= CONFIANCA_MIN) {
+                        diagnosticoApriori.add(candidato);
+                    }
+                }
             }
-
         }
 
-        if (!doencasDiagnostico.isEmpty()) {
-            System.out.println("Doenças mais prováveis: " + doencasDiagnostico);
-        } else {
-            System.out.println("Nenhum diagnóstico encontrado para os sintomas informados.");
-        }
+         JOptionPane.showMessageDialog(null, diagnosticoApriori, "Diagnostico Automático - Apriori", JOptionPane.INFORMATION_MESSAGE);
 
     }
 

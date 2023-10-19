@@ -51,11 +51,7 @@ public class Servidor implements Serializable {
         }
 
     }
-    
-    private static void diagnosticoNormal(){
-   
-    }
-
+ 
     public static int getPORTA() {
         return PORTA;
     }
