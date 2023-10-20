@@ -1,5 +1,7 @@
 package intergraf;
 
+import servidor.Consulta;
+import servidor.ReqServer;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -17,8 +19,6 @@ import javax.swing.JOptionPane;
 public class Diagnostico extends javax.swing.JFrame {
 
     private static ArrayList<Consulta> diagnosticos = new ArrayList();
-    private static final double FREQ_MINIMA = 0.5;
-    private static final double CONF_MINIMA = 0.7;
 
     public Diagnostico() {
         initComponents();
@@ -49,7 +49,6 @@ public class Diagnostico extends javax.swing.JFrame {
         txtDiagnostico = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        getContentPane().setLayout(new java.awt.BorderLayout());
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -89,6 +88,12 @@ public class Diagnostico extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("Diagnóstico:");
+
+        diagnostico.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                diagnosticoActionPerformed(evt);
+            }
+        });
 
         btnDiagAutomatico.setText("Diagnóstico Automático");
         btnDiagAutomatico.addActionListener(new java.awt.event.ActionListener() {
@@ -195,7 +200,7 @@ public class Diagnostico extends javax.swing.JFrame {
     private void btnEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnviarActionPerformed
 
         try {
-            enviarConsulta();
+            enviarConsulta(1);
         } catch (IOException ex) {
             Logger.getLogger(Diagnostico.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -206,12 +211,16 @@ public class Diagnostico extends javax.swing.JFrame {
     private void btnDiagAutomaticoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDiagAutomaticoActionPerformed
 
         try {
-            apriori();
+            enviarConsulta(2);
         } catch (IOException ex) {
             Logger.getLogger(Diagnostico.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }//GEN-LAST:event_btnDiagAutomaticoActionPerformed
+
+    private void diagnosticoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_diagnosticoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_diagnosticoActionPerformed
 
     void adicionarArray(JCheckBox chk, String msg, ArrayList<String> array) {
         if (chk.isSelected()) {
@@ -219,7 +228,7 @@ public class Diagnostico extends javax.swing.JFrame {
         }
     }
 
-    private void enviarConsulta() throws IOException {
+    private void enviarConsulta(int tipo) throws IOException {
 
         String diag = diagnostico.getText();
 
@@ -229,6 +238,7 @@ public class Diagnostico extends javax.swing.JFrame {
             String nomeDoComputador = endereco.getHostName();
             Socket socket = null;
             ObjectOutputStream objectOutputStream;
+
 
             try {
                 endereco = InetAddress.getByName(nomeDoComputador);
@@ -259,73 +269,23 @@ public class Diagnostico extends javax.swing.JFrame {
             sintomas.add(diag); //adiciona o diagnostico no vetor de sintomas
 
             Consulta consulta = new Consulta(sintomas);
-
-            diagnosticos.add(consulta); //adiciona consulta no vetor de diagnosticos, com sintomas e doenças
-
-            objectOutputStream.writeObject(consulta);
-
-            JOptionPane.showMessageDialog(null, "Consulta enviada com suscesso para o servidor!", "Enviado", JOptionPane.INFORMATION_MESSAGE);
-
-            for (String str : sintomas) {
-                txtDiagnostico.append(str + ", ");
+            
+            ReqServer sendServer = new ReqServer(tipo, consulta);
+            
+            objectOutputStream.writeObject(sendServer);
+            
+            if (tipo == 1){
+                for (String str : sintomas) {
+                    txtDiagnostico.append(str + ", ");
+                }
+                txtDiagnostico.append("\n");
             }
-            txtDiagnostico.append("\n");
 
         } else {
             JOptionPane.showMessageDialog(null, "Diagnóstico vazio", "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private void apriori() throws IOException {
-
-        int maxCount = 0; // Contador máximo de ocorrências de sintomas
-        ArrayList<String> doencasDiagnostico = new ArrayList<>(); //Lista para armazenar as doenças do apriori
-        ArrayList<String> sintomas = new ArrayList();//Lista dos sintomas do cliente
-
-        adicionarArray(chkCabeca, "Dor de cabeça", sintomas);
-        adicionarArray(chkCalafrio, "Calafrio", sintomas);
-        adicionarArray(chkCansaco, "Cansaço", sintomas);
-        adicionarArray(chkDiarreia, "Diarreia", sintomas);
-        adicionarArray(chkFebre, "Febre", sintomas);
-        adicionarArray(chkGarganta, "Dor de garganta", sintomas);
-        adicionarArray(chkInchaco, "Inchaço", sintomas);
-        adicionarArray(chkOlho, "Dor nos olhos", sintomas);
-        adicionarArray(chkTontura, "Tontura", sintomas);
-        adicionarArray(chkVomito, "Vômito", sintomas);
-
-        for (Consulta consulta : diagnosticos) {
-            int count = 0;
-
-            if (consulta.getSintomas().containsAll(sintomas)) {
-                System.out.println("Contem todos os sintomas");
-            }
-
-            // Verifique quantos sintomas informados estão presentes na consulta
-            for (String sintoma : sintomas) {
-
-                if (consulta.getSintomas().contains(sintoma)) {
-                    count++;
-                }
-            }
-
-            // Se o número de sintomas presentes na consulta for maior que o máximo atual
-            if (count > maxCount) {
-                maxCount = count;
-                doencasDiagnostico.clear();
-                doencasDiagnostico.add(consulta.getSintomas().get(consulta.getSintomas().size() - 1));
-            } else if (count == maxCount) {
-                doencasDiagnostico.add(consulta.getSintomas().get(consulta.getSintomas().size() - 1));
-            }
-
-        }
-
-        if (!doencasDiagnostico.isEmpty()) {
-            System.out.println("Doenças mais prováveis: " + doencasDiagnostico);
-        } else {
-            System.out.println("Nenhum diagnóstico encontrado para os sintomas informados.");
-        }
-
-    }
 
     /**
      * @param args the command line arguments
