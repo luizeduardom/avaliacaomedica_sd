@@ -1,5 +1,7 @@
 package intergraf;
 
+import servidor.Consulta;
+import servidor.ReqServer;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -17,7 +19,6 @@ import javax.swing.JOptionPane;
 public class Diagnostico extends javax.swing.JFrame {
 
     private static ArrayList<Consulta> diagnosticos = new ArrayList();
-    private static final double CONFIANCA_MIN = 0.5;
 
     public Diagnostico() {
         initComponents();
@@ -48,7 +49,6 @@ public class Diagnostico extends javax.swing.JFrame {
         txtDiagnostico = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        getContentPane().setLayout(new java.awt.BorderLayout());
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -88,6 +88,12 @@ public class Diagnostico extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("Diagnóstico:");
+
+        diagnostico.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                diagnosticoActionPerformed(evt);
+            }
+        });
 
         btnDiagAutomatico.setText("Diagnóstico Automático");
         btnDiagAutomatico.addActionListener(new java.awt.event.ActionListener() {
@@ -194,7 +200,7 @@ public class Diagnostico extends javax.swing.JFrame {
     private void btnEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnviarActionPerformed
 
         try {
-            enviarConsulta();
+            enviarConsulta(1);
         } catch (IOException ex) {
             Logger.getLogger(Diagnostico.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -205,12 +211,16 @@ public class Diagnostico extends javax.swing.JFrame {
     private void btnDiagAutomaticoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDiagAutomaticoActionPerformed
 
         try {
-            apriori();
+            enviarConsulta(2);
         } catch (IOException ex) {
             Logger.getLogger(Diagnostico.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }//GEN-LAST:event_btnDiagAutomaticoActionPerformed
+
+    private void diagnosticoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_diagnosticoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_diagnosticoActionPerformed
 
     void adicionarArray(JCheckBox chk, String msg, ArrayList<String> array) {
         if (chk.isSelected()) {
@@ -218,7 +228,7 @@ public class Diagnostico extends javax.swing.JFrame {
         }
     }
 
-    private void enviarConsulta() throws IOException {
+    private void enviarConsulta(int tipo) throws IOException {
 
         String diag = diagnostico.getText();
 
@@ -228,6 +238,7 @@ public class Diagnostico extends javax.swing.JFrame {
             String nomeDoComputador = endereco.getHostName();
             Socket socket = null;
             ObjectOutputStream objectOutputStream;
+
 
             try {
                 endereco = InetAddress.getByName(nomeDoComputador);
@@ -258,91 +269,23 @@ public class Diagnostico extends javax.swing.JFrame {
             sintomas.add(diag); //adiciona o diagnostico no vetor de sintomas
 
             Consulta consulta = new Consulta(sintomas);
-
-            diagnosticos.add(consulta); //adiciona consulta no vetor de diagnosticos, com sintomas e doenças
-
-            objectOutputStream.writeObject(consulta);
-
-            JOptionPane.showMessageDialog(null, "Consulta enviada com suscesso para o servidor!", "Enviado", JOptionPane.INFORMATION_MESSAGE);
-
-            for (String str : sintomas) {
-                txtDiagnostico.append(str + ", ");
+            
+            ReqServer sendServer = new ReqServer(tipo, consulta);
+            
+            objectOutputStream.writeObject(sendServer);
+            
+            if (tipo == 1){
+                for (String str : sintomas) {
+                    txtDiagnostico.append(str + ", ");
+                }
+                txtDiagnostico.append("\n");
             }
-            txtDiagnostico.append("\n");
 
         } else {
             JOptionPane.showMessageDialog(null, "Diagnóstico vazio", "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private void apriori() throws IOException {
-
-        ArrayList<String> sintomas = new ArrayList();//Lista dos sintomas do cliente
-        ArrayList<Candidato> diagnosticoApriori = new ArrayList<>(); //Lista para armazenar as doenças do apriori
-
-        adicionarArray(chkCabeca, "Dor de cabeça", sintomas);
-        adicionarArray(chkCalafrio, "Calafrio", sintomas);
-        adicionarArray(chkCansaco, "Cansaço", sintomas);
-        adicionarArray(chkDiarreia, "Diarreia", sintomas);
-        adicionarArray(chkFebre, "Febre", sintomas);
-        adicionarArray(chkGarganta, "Dor de garganta", sintomas);
-        adicionarArray(chkInchaco, "Inchaço", sintomas);
-        adicionarArray(chkOlho, "Dor nos olhos", sintomas);
-        adicionarArray(chkTontura, "Tontura", sintomas);
-        adicionarArray(chkVomito, "Vômito", sintomas);
-
-        for (Consulta consulta : diagnosticos) {
-            double confianca = 0;
-            int contadorSintomas = 0; //Utilizo quando uma consulta tem o mesmo tamanho de outra
-
-            
-            // For para percorrer cada sintoma da consulta
-            for (String sintoma : sintomas) {
-
-                if (consulta.getSintomas().contains(sintoma)) {
-                    contadorSintomas++;
-                }
-            }
-
-            // Tamanho dos sintomas da consulta (excluindo o diagnostico)
-            int tamanhoSintomas = consulta.getSintomas().size() - 1;
-            
-            // Tamanho dos sintomas que o usuário selecionou no checkbox
-            int sintomasDoUsuario = sintomas.size();
-
-            
-            // Se existe algum sintoma da consulta no checkbox selecionado, ele verifica se o contador de sintomas do usuário é menor que o tamanho de sintomas que o 
-            // usuário selecionou no checkbox, se for, ele faz um calculo de confiança onde o contador de sintomas do usuário é dividido pelo numero de sintomas selecionados
-            // do checkbox. Se não, ele faz o calculo da confiança baseado no tamanho dos sintomas da consulta dividido pelo sintomas que o usuário selecionou no checkbox
-            if (contadorSintomas > 0) {
-                String diagnostico = consulta.getSintomas().get(tamanhoSintomas);
-
-                if (contadorSintomas < tamanhoSintomas) {
-
-                    confianca = (double) contadorSintomas / tamanhoSintomas;
-
-                } else {
-
-                    confianca = (double) tamanhoSintomas / sintomasDoUsuario;
-
-                }
-
-                // se a confiança for maior ou igual da confiança mínima estipulada, então ele cria um candidato passando a confiança e o diagnostico e adiciona no array de
-                // candidatos
-                if (confianca >= CONFIANCA_MIN) {
-
-                    Candidato candidato = new Candidato(diagnostico, confianca);
-
-                    if (candidato.getConfianca() >= CONFIANCA_MIN) {
-                        diagnosticoApriori.add(candidato);
-                    }
-                }
-            }
-        }
-
-         JOptionPane.showMessageDialog(null, diagnosticoApriori, "Diagnostico Automático - Apriori", JOptionPane.INFORMATION_MESSAGE);
-
-    }
 
     /**
      * @param args the command line arguments

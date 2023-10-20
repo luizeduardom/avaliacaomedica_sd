@@ -1,4 +1,4 @@
-package intergraf;
+package servidor;
 
 
 public class Candidato {

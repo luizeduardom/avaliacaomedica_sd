@@ -1,4 +1,4 @@
-package intergraf;
+package servidor;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -23,6 +23,7 @@ public class Consulta implements Serializable {
     public void setSintomas(ArrayList<String> sintomas) {
         this.sintomas = sintomas;
     }
+    
 
     @Override
     public String toString() {
