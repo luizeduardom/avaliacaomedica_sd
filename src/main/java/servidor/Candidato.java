@@ -1,8 +1,7 @@
 package servidor;
 
-
 public class Candidato {
-    
+
     private String nome;
     private double confianca;
 
@@ -29,7 +28,8 @@ public class Candidato {
 
     @Override
     public String toString() {
-        return "Candidato " + nome + ", " + confianca * 100 + "% de chances.";
+        String confiancaConvertida = String.format("Candidato " + nome + " %.2f%% de chances.", confianca * 100);
+        return confiancaConvertida;
     }
 
 }
