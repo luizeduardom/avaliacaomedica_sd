@@ -3,22 +3,17 @@ package intergraf;
 import servidor.Consulta;
 import servidor.ReqServer;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 
 public class Diagnostico extends javax.swing.JFrame {
-
-    private static ArrayList<Consulta> diagnosticos = new ArrayList();
 
     public Diagnostico() {
         initComponents();
@@ -88,12 +83,6 @@ public class Diagnostico extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("Diagnóstico:");
-
-        diagnostico.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                diagnosticoActionPerformed(evt);
-            }
-        });
 
         btnDiagAutomatico.setText("Diagnóstico Automático");
         btnDiagAutomatico.addActionListener(new java.awt.event.ActionListener() {
@@ -218,10 +207,6 @@ public class Diagnostico extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnDiagAutomaticoActionPerformed
 
-    private void diagnosticoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_diagnosticoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_diagnosticoActionPerformed
-
     void adicionarArray(JCheckBox chk, String msg, ArrayList<String> array) {
         if (chk.isSelected()) {
             array.add(msg);
@@ -230,62 +215,62 @@ public class Diagnostico extends javax.swing.JFrame {
 
     private void enviarConsulta(int tipo) throws IOException {
 
-        String diag = diagnostico.getText();
+        InetAddress endereco = InetAddress.getLocalHost();
+        String nomeDoComputador = endereco.getHostName();
+        Socket socket = null;
+        ObjectOutputStream objectOutputStream;
 
-        if (!diag.isEmpty()) {
+        try {
+            endereco = InetAddress.getByName(nomeDoComputador);
+            socket = new Socket(endereco, 2000);
+            System.out.println("Socket criado com sucesso!");
+            objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+        } catch (UnknownHostException e) {
+            System.out.println(e.getMessage());
+            return;
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            return;
+        }
 
-            InetAddress endereco = InetAddress.getLocalHost();
-            String nomeDoComputador = endereco.getHostName();
-            Socket socket = null;
-            ObjectOutputStream objectOutputStream;
+        ArrayList<String> sintomas = new ArrayList();
 
+        adicionarArray(chkCabeca, "Dor de cabeça", sintomas);
+        adicionarArray(chkCalafrio, "Calafrio", sintomas);
+        adicionarArray(chkCansaco, "Cansaço", sintomas);
+        adicionarArray(chkDiarreia, "Diarreia", sintomas);
+        adicionarArray(chkFebre, "Febre", sintomas);
+        adicionarArray(chkGarganta, "Dor de garganta", sintomas);
+        adicionarArray(chkInchaco, "Inchaço", sintomas);
+        adicionarArray(chkOlho, "Dor nos olhos", sintomas);
+        adicionarArray(chkTontura, "Tontura", sintomas);
+        adicionarArray(chkVomito, "Vômito", sintomas);
 
-            try {
-                endereco = InetAddress.getByName(nomeDoComputador);
-                socket = new Socket(endereco, 2000);
-                System.out.println("Socket criado com sucesso!");
-                objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-            } catch (UnknownHostException e) {
-                System.out.println(e.getMessage());
-                return;
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
-                return;
-            }
+        if (tipo == 1) {
 
-            ArrayList<String> sintomas = new ArrayList();
+            String diag = diagnostico.getText();
 
-            adicionarArray(chkCabeca, "Dor de cabeça", sintomas);
-            adicionarArray(chkCalafrio, "Calafrio", sintomas);
-            adicionarArray(chkCansaco, "Cansaço", sintomas);
-            adicionarArray(chkDiarreia, "Diarreia", sintomas);
-            adicionarArray(chkFebre, "Febre", sintomas);
-            adicionarArray(chkGarganta, "Dor de garganta", sintomas);
-            adicionarArray(chkInchaco, "Inchaço", sintomas);
-            adicionarArray(chkOlho, "Dor nos olhos", sintomas);
-            adicionarArray(chkTontura, "Tontura", sintomas);
-            adicionarArray(chkVomito, "Vômito", sintomas);
+            if (!diag.isEmpty()) {
 
-            sintomas.add(diag); //adiciona o diagnostico no vetor de sintomas
+                sintomas.add(diag); //adiciona o diagnostico no vetor de sintomas
+                Consulta consulta = new Consulta(sintomas);
+                ReqServer sendServer = new ReqServer(tipo, consulta);
+                objectOutputStream.writeObject(sendServer);
 
-            Consulta consulta = new Consulta(sintomas);
-            
-            ReqServer sendServer = new ReqServer(tipo, consulta);
-            
-            objectOutputStream.writeObject(sendServer);
-            
-            if (tipo == 1){
                 for (String str : sintomas) {
                     txtDiagnostico.append(str + ", ");
                 }
                 txtDiagnostico.append("\n");
-            }
 
+            } else {
+                JOptionPane.showMessageDialog(null, "Diagnóstico vazio", "Erro", JOptionPane.ERROR_MESSAGE);
+            }
         } else {
-            JOptionPane.showMessageDialog(null, "Diagnóstico vazio", "Erro", JOptionPane.ERROR_MESSAGE);
+            Consulta consulta = new Consulta(sintomas);
+            ReqServer sendServer = new ReqServer(tipo, consulta);
+            objectOutputStream.writeObject(sendServer);
         }
     }
-
 
     /**
      * @param args the command line arguments
